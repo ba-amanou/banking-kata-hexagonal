@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: banking-kata
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/bankingkata}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
