@@ -19,6 +19,7 @@ Practice and showcase:
 - JUnit 5 + Mockito + AssertJ
 - Testcontainers
 - ArchUnit
+- GitHub Actions (CI)
 
 ## Project Structure
 
