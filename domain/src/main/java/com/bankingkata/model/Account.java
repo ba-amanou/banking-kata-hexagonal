@@ -2,6 +2,7 @@ package com.bankingkata.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import lombok.Getter;
 
@@ -13,8 +14,8 @@ public class Account {
 
     
 
-    public Account(String id, Money balance) {
-        this.id = id;
+    public Account(Money balance) {
+        this.id = UUID.randomUUID().toString();
         this.balance = balance;
         this.transactions = new ArrayList<>();
     }
