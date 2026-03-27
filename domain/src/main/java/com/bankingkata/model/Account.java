@@ -12,13 +12,17 @@ public class Account {
     private Money balance;
     private List<Transaction> transactions;
 
-    
-
     public Account(Money balance) {
         this.id = UUID.randomUUID().toString();
         this.balance = balance;
         this.transactions = new ArrayList<>();
     }
+
+    public Account(String id, Money balance, List<Transaction> transactions) {
+        this.id = id;
+        this.balance = balance;
+        this.transactions = transactions;
+    }    
 
     public void deposit(Money amount) {
         this.transactions.add(Transaction.deposit(amount));
