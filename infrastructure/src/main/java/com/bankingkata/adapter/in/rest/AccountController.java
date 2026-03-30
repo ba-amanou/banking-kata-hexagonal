@@ -15,6 +15,8 @@ import com.bankingkata.port.in.DepositMoneyUseCase;
 import com.bankingkata.port.in.GetAccountBalanceUseCase;
 import com.bankingkata.port.in.WithdrawMoneyUseCase;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,8 @@ public class AccountController {
     private final GetAccountBalanceUseCase getAccountBalanceUseCase;
     private final AccountMapper accountMapper;
 
+    @Operation(summary = "Create a new account")
+    @ApiResponse(responseCode = "201", description = "Account created successfully")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AccountResponse createAccount(@RequestBody CreateAccountRequest request) {
@@ -46,6 +50,9 @@ public class AccountController {
         return response;
     }
 
+    @Operation(summary = "Deposit money to an account")
+    @ApiResponse(responseCode = "200", description = "Deposit successful")
+    @ApiResponse(responseCode = "404", description = "Account not found")
     @PostMapping("/{id}/deposit")
     public AccountResponse deposit(@PathVariable("id") String id, @RequestBody AmountRequest request) {
         Money amount = new Money(request.getAmount());
@@ -56,6 +63,10 @@ public class AccountController {
         return response;
     }
     
+    @Operation(summary = "Withdraw money from an account")
+    @ApiResponse(responseCode = "200", description = "Withdrawal successful")
+    @ApiResponse(responseCode = "404", description = "Account not found")
+    @ApiResponse(responseCode = "400", description = "Insufficient funds")    
     @PostMapping("/{id}/withdraw")
     public AccountResponse withdraw(@PathVariable("id") String id, @RequestBody AmountRequest request) {
         Money amount = new Money(request.getAmount());
@@ -66,6 +77,9 @@ public class AccountController {
         return response;
     }
 
+    @Operation(summary = "Get account balance")
+    @ApiResponse(responseCode = "200", description = "Balance retrieved successfully")
+    @ApiResponse(responseCode = "404", description = "Account not found")
     @GetMapping("/{id}/balance")
     public BalanceResponse balance(@PathVariable("id") String id) {
         Money balance = getAccountBalanceUseCase.getBalance(id);
