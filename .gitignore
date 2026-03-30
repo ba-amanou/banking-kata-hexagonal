@@ -8,3 +8,6 @@ target/
 
 # Environment
 .env
+
+# Docker
+postgres-data/
