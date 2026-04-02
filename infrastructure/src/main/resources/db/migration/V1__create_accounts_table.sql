@@ -1,0 +1,5 @@
+CREATE TABLE accounts (
+    id VARCHAR(36) NOT NULL,
+    balance DOUBLE PRECISION NOT NULL,
+    PRIMARY KEY (id)
+);
