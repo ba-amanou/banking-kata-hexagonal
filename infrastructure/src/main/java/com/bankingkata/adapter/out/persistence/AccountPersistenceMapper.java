@@ -13,9 +13,14 @@ import com.bankingkata.model.TransactionType;
 @Component
 public class AccountPersistenceMapper {
     public AccountJpaEntity toJpaEntity(Account account) {
+        AccountJpaEntity accountEntity = AccountJpaEntity.builder()
+            .id(account.getId())
+            .balance(account.getBalance().amount())
+            .build();
+
         List<TransactionJpaEntity> transactionsJpaEntity = account.getTransactions()
             .stream()
-            .map(this::toTransactionJpaEntity)
+            .map(t -> toTransactionJpaEntity(t, accountEntity))
             .collect(Collectors.toList());
 
         return AccountJpaEntity.builder()
@@ -25,12 +30,13 @@ public class AccountPersistenceMapper {
             .build();
     }
 
-    private TransactionJpaEntity toTransactionJpaEntity(Transaction transaction) {
+    private TransactionJpaEntity toTransactionJpaEntity(Transaction transaction, AccountJpaEntity accountEntity) {
         return TransactionJpaEntity.builder()
             .id(transaction.getId())
             .amount(transaction.getAmount().amount())
             .type(transaction.getType().name())
             .date(transaction.getDate())
+            .account(accountEntity)
             .build();
             
     }
