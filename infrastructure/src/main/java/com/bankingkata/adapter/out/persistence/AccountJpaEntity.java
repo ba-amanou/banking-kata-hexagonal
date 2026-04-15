@@ -3,6 +3,7 @@ package com.bankingkata.adapter.out.persistence;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -21,6 +22,8 @@ import lombok.NoArgsConstructor;
 public class AccountJpaEntity {
     @Id
     private String id;
+    
+    @Column(nullable = false)
     private double balance;
     
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
