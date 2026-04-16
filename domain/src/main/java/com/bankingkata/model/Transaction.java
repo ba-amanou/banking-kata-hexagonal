@@ -12,22 +12,25 @@ import lombok.Getter;
 @Builder
 public class Transaction {
     private String id;
+    private String accountId;
     private Money amount;
     private TransactionType type;
     private LocalDateTime date;
 
-    public static Transaction deposit(Money amount) {
+    public static Transaction deposit(String accountId, Money amount) {
         return Transaction.builder()
             .id(UUID.randomUUID().toString())
+            .accountId(accountId)
             .amount(amount)
             .type(TransactionType.DEPOSIT)
             .date(LocalDateTime.now())
             .build();
     }
 
-    public static Transaction withdrawal(Money amount) {
+    public static Transaction withdrawal(String accountId, Money amount) {
         return Transaction.builder()
             .id(UUID.randomUUID().toString())
+            .accountId(accountId)
             .amount(amount)
             .type(TransactionType.WITHDRAWAL)
             .date(LocalDateTime.now())

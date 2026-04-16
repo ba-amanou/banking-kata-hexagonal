@@ -9,6 +9,7 @@ import com.bankingkata.port.in.GetAccountBalanceUseCase;
 import com.bankingkata.port.in.WithdrawMoneyUseCase;
 import com.bankingkata.port.out.LoadAccountPort;
 import com.bankingkata.port.out.SaveAccountPort;
+import com.bankingkata.port.out.SaveTransactionPort;
 import com.bankingkata.service.CreateAccountService;
 import com.bankingkata.service.DepositMoneyService;
 import com.bankingkata.service.GetAccountBalanceService;
@@ -23,13 +24,13 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public DepositMoneyUseCase depositMoneyUseCase(LoadAccountPort loadAccountPort, SaveAccountPort saveAccountPort) {
-        return new DepositMoneyService(saveAccountPort, loadAccountPort);
+    public DepositMoneyUseCase depositMoneyUseCase(LoadAccountPort loadAccountPort, SaveAccountPort saveAccountPort, SaveTransactionPort saveTransactionPort) {
+        return new DepositMoneyService(saveAccountPort, loadAccountPort, saveTransactionPort);
     }
 
     @Bean
-    public WithdrawMoneyUseCase withdrawMoneyUseCase(LoadAccountPort loadAccountPort, SaveAccountPort saveAccountPort) {
-        return new WithdrawMoneyService(saveAccountPort, loadAccountPort);
+    public WithdrawMoneyUseCase withdrawMoneyUseCase(LoadAccountPort loadAccountPort, SaveAccountPort saveAccountPort, SaveTransactionPort saveTransactionPort) {
+        return new WithdrawMoneyService(saveAccountPort, loadAccountPort, saveTransactionPort);
     }
 
     @Bean

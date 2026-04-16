@@ -1,7 +1,5 @@
 package com.bankingkata.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import lombok.Getter;
@@ -10,27 +8,22 @@ import lombok.Getter;
 public class Account {
     private String id;
     private Money balance;
-    private List<Transaction> transactions;
 
     public Account(Money balance) {
         this.id = UUID.randomUUID().toString();
         this.balance = balance;
-        this.transactions = new ArrayList<>();
     }
 
-    public Account(String id, Money balance, List<Transaction> transactions) {
+    public Account(String id, Money balance) {
         this.id = id;
         this.balance = balance;
-        this.transactions = transactions;
     }    
 
     public void deposit(Money amount) {
-        this.transactions.add(Transaction.deposit(amount));
         this.balance = this.balance.add(amount);
     }
 
     public void withdraw(Money amount) {
-        this.transactions.add(Transaction.withdrawal(amount));
         this.balance = this.balance.subtract(amount);
     }
 }
