@@ -28,8 +28,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.List;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @WebMvcTest(AccountController.class)
@@ -57,7 +55,7 @@ public class AccountControllerTest {
         request.setInitialBalance(100.0);
 
         Account account = new Account(new Money(100.0));
-        AccountResponse response = new AccountResponse(account.getId(), 100.0, List.of());
+        AccountResponse response = new AccountResponse(account.getId(), 100.0);
 
         when(createAccountUseCase.createAccount(any())).thenReturn(account);
         when(accountMapper.toResponse(account)).thenReturn(response);
@@ -75,7 +73,7 @@ public class AccountControllerTest {
         request.setAmount(100.0);
 
         Account account = new Account(new Money(100.0));
-        AccountResponse response = new AccountResponse(account.getId(), account.getBalance().amount(), List.of());
+        AccountResponse response = new AccountResponse(account.getId(), account.getBalance().amount());
 
         when(depositMoneyUseCase.deposit(any(),any())).thenReturn(account);
         when(accountMapper.toResponse(account)).thenReturn(response);
@@ -111,7 +109,7 @@ public class AccountControllerTest {
         request.setAmount(100.0);
 
         Account account = new Account(new Money(100.0));
-        AccountResponse response = new AccountResponse(account.getId(), account.getBalance().amount(), List.of());
+        AccountResponse response = new AccountResponse(account.getId(), account.getBalance().amount());
 
         when(withdrawMoneyUseCase.withdraw(any(),any())).thenReturn(account);
         when(accountMapper.toResponse(account)).thenReturn(response);

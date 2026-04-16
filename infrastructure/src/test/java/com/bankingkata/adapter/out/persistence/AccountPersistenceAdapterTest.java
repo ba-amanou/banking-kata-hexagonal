@@ -24,7 +24,6 @@ public class AccountPersistenceAdapterTest extends AbstractPersistenceTest {
 
         assertThat(loaded.getId()).isEqualTo(account.getId());
         assertThat(loaded.getBalance()).isEqualTo(new Money(100.0));
-        assertThat(loaded.getTransactions()).isEmpty();
     }
 
     @Test 
@@ -32,18 +31,6 @@ public class AccountPersistenceAdapterTest extends AbstractPersistenceTest {
         Account loaded = adapter.load("id-not-found");
 
         assertThat(loaded).isNull();
-    }
-
-    @Test
-    void should_save_account_with_transactions() {
-        Account account = new Account(new Money(100.0));
-        account.deposit(new Money(50.0));
-
-        adapter.save(account);
-        Account loaded = adapter.load(account.getId());
-
-        assertThat(loaded.getTransactions()).hasSize(1);
-        assertThat(loaded.getTransactions().get(0).getAmount()).isEqualTo(new Money(50.0));
     }
 
     @Test
