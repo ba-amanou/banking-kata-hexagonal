@@ -13,7 +13,7 @@ public class TransactionTest {
 
     @Test
     void should_create_deposit_transaction() {
-        Transaction transaction = Transaction.deposit(new Money(100.0));
+        Transaction transaction = Transaction.deposit("accountId",new Money(100.0));
 
         assertThat(transaction.getId()).isNotNull();
         assertThat(transaction.getAmount()).isEqualTo(new Money(100.0));
@@ -23,7 +23,7 @@ public class TransactionTest {
 
     @Test
     void should_create_withdrawal_transaction() {
-        Transaction transaction = Transaction.withdrawal(new Money(50.0));
+        Transaction transaction = Transaction.withdrawal("accountId",new Money(50.0));
 
         assertThat(transaction.getId()).isNotNull();
         assertThat(transaction.getAmount()).isEqualTo(new Money(50.0));

@@ -37,32 +37,4 @@ public class AccountTest {
             .isInstanceOf(InvalidAmountException.class)
             .hasMessage("Insufficient funds");
     }
-
-    @Test
-    void deposit_should_create_transaction() {
-        Account account1 = new Account(new Money(100.0));
-        account1.deposit(new Money(100.0));
-        assertThat(account1.getTransactions().size()).isEqualTo(1);
-        assertThat(account1.getTransactions().get(0).getAmount()).isEqualTo(new Money(100.0));
-    }
-
-    @Test 
-    void withdraw_should_create_transaction() {
-        Account account1 = new Account(new Money(100.0));
-        account1.withdraw(new Money(50.0));
-        assertThat(account1.getTransactions().size()).isEqualTo(1);
-        assertThat(account1.getTransactions().get(0).getAmount()).isEqualTo(new Money(50.0)); 
-    }
-
-    @Test 
-    void should_be_able_to_have_transaction_history(){
-        Account account1 = new Account(new Money(100.0));
-        account1.deposit(new Money(100.0));
-        account1.withdraw(new Money(50.0));
-        account1.deposit(new Money(100.0));
-        assertThat(account1.getTransactions().size()).isEqualTo(3);
-        assertThat(account1.getTransactions().get(0).getAmount()).isEqualTo(new Money(100.0));
-        assertThat(account1.getTransactions().get(1).getAmount()).isEqualTo(new Money(50.0));
-        assertThat(account1.getTransactions().get(2).getAmount()).isEqualTo(new Money(100.0));
-    }
 }
