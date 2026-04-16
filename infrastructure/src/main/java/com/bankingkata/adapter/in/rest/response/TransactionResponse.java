@@ -11,6 +11,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class TransactionResponse {
     private String id;
+    private String accountId;
     private double amount;
     private TransactionType type;
     private LocalDateTime date;
