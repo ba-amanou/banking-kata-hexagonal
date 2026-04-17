@@ -36,7 +36,7 @@ public class DepositMoneyServiceTest {
     @Test
     void should_be_able_to_deposit_money() {
         Money amount = new Money(100.0);
-        Account account1 = new Account(amount);
+        Account account1 = Account.create(amount);
         when(loadAccountPort.load("1")).thenReturn(account1);
 
         depositMoneyService.deposit("1", amount);
@@ -48,7 +48,7 @@ public class DepositMoneyServiceTest {
     @Test
     void should_save_transaction_with_correct_data_when_deposit() {
         Money amount = new Money(100.0);
-        Account account1 = new Account(amount);
+        Account account1 = Account.create(amount);
         when(loadAccountPort.load("1")).thenReturn(account1);
 
         depositMoneyService.deposit("1", amount);

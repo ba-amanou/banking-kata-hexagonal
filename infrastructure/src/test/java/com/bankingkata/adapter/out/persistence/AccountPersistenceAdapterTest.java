@@ -17,7 +17,7 @@ public class AccountPersistenceAdapterTest extends AbstractPersistenceTest {
 
     @Test
     void should_save_and_load_account() {
-        Account account = new Account(new Money(100.0));
+        Account account = Account.create(new Money(100.0));
 
         adapter.save(account);
         Account loaded = adapter.load(account.getId());
@@ -35,7 +35,7 @@ public class AccountPersistenceAdapterTest extends AbstractPersistenceTest {
 
     @Test
     void should_update_account_balance_after_deposit() {
-        Account account = new Account(new Money(100.0));
+        Account account = Account.create(new Money(100.0));
         adapter.save(account);
         
         account.deposit(new Money(50.0));

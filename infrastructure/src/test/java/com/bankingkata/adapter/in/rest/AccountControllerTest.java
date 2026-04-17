@@ -54,7 +54,7 @@ public class AccountControllerTest {
         CreateAccountRequest request = new CreateAccountRequest();
         request.setInitialBalance(100.0);
 
-        Account account = new Account(new Money(100.0));
+        Account account = Account.create(new Money(100.0));
         AccountResponse response = new AccountResponse(account.getId(), 100.0);
 
         when(createAccountUseCase.createAccount(any())).thenReturn(account);
@@ -72,7 +72,7 @@ public class AccountControllerTest {
         AmountRequest request = new AmountRequest();
         request.setAmount(100.0);
 
-        Account account = new Account(new Money(100.0));
+        Account account = Account.create(new Money(100.0));
         AccountResponse response = new AccountResponse(account.getId(), account.getBalance().amount());
 
         when(depositMoneyUseCase.deposit(any(),any())).thenReturn(account);
@@ -108,7 +108,7 @@ public class AccountControllerTest {
         AmountRequest request = new AmountRequest();
         request.setAmount(100.0);
 
-        Account account = new Account(new Money(100.0));
+        Account account = Account.create(new Money(100.0));
         AccountResponse response = new AccountResponse(account.getId(), account.getBalance().amount());
 
         when(withdrawMoneyUseCase.withdraw(any(),any())).thenReturn(account);
