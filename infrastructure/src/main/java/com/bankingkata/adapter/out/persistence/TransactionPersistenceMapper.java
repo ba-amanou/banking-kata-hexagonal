@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import com.bankingkata.model.Money;
 import com.bankingkata.model.Transaction;
-import com.bankingkata.model.TransactionType;
 
 @Component
 public class TransactionPersistenceMapper {
@@ -13,7 +12,7 @@ public class TransactionPersistenceMapper {
         return TransactionJpaEntity.builder()
             .id(transaction.getId())
             .accountId(transaction.getAccountId())
-            .type(transaction.getType().name())
+            .type(transaction.getType())
             .amount(transaction.getAmount().amount())
             .date(transaction.getDate())
             .build();
@@ -24,7 +23,7 @@ public class TransactionPersistenceMapper {
             .id(transactionEntity.getId())
             .accountId(transactionEntity.getAccountId())
             .amount(new Money(transactionEntity.getAmount()))
-            .type(TransactionType.valueOf(transactionEntity.getType()))
+            .type(transactionEntity.getType())
             .date(transactionEntity.getDate())
             .build();
     }
