@@ -14,7 +14,7 @@ public class CreateAccountService implements CreateAccountUseCase {
 
     @Override
     public Account createAccount(Money initialBalance) {
-        Account newAccount = new Account(initialBalance);
+        Account newAccount = Account.create(initialBalance);
 
         saveAccountPort.save(newAccount);
         
