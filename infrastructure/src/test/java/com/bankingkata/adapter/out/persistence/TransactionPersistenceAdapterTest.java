@@ -36,7 +36,7 @@ public class TransactionPersistenceAdapterTest extends AbstractPersistenceTest {
 
         TransactionJpaEntity saved = repository.findById(transaction.getId()).orElseThrow();
         assertThat(saved.getAccountId()).isEqualTo("account-1");
-        assertThat(saved.getType()).isEqualTo(TransactionType.DEPOSIT.name());
+        assertThat(saved.getType()).isEqualTo(TransactionType.DEPOSIT);
         assertThat(saved.getAmount()).isEqualTo(100.0);
     }
 
