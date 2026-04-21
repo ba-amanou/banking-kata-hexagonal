@@ -2,6 +2,8 @@
 
 A banking kata built with **Hexagonal Architecture** (Ports & Adapters) and **TDD** in Java / Spring Boot.
 
+![CI](https://github.com/ba-amanou/banking-kata-hexagonal/actions/workflows/ci.yml/badge.svg)
+
 ## Purpose
 
 Practice and showcase:
