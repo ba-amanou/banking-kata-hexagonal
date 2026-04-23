@@ -15,6 +15,7 @@
         <module>application</module>
         <module>infrastructure</module>
         <module>bootstrap</module>
+        <module>coverage</module>
     </modules>
 
     <properties>
@@ -23,6 +24,9 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-boot.version>4.0.4</spring-boot.version>
+        <jacoco.version>0.8.14</jacoco.version>
+        <jacoco.line.coverage>0.80</jacoco.line.coverage>
+        <jacoco.branch.coverage>0.75</jacoco.branch.coverage>
     </properties>
 
     <dependencyManagement>
@@ -55,8 +59,33 @@
                         <skip>true</skip>
                     </configuration>                    
                 </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco.version}</version>
+                    <configuration>
+                        <excludes>
+                            <exclude>**/config/**</exclude>
+                            <exclude>**/*Application*</exclude>
+                            <exclude>**/generated/**</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>                
             </plugins>
         </pluginManagement>
+        
+        <plugins>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>prepare-agent</id>
+                            <goals><goal>prepare-agent</goal></goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>           
     </build>
 
 </project>

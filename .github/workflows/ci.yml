@@ -22,4 +22,12 @@ jobs:
           cache: 'maven'
 
       - name: Build and test
-        run: mvn clean verify
+        run: mvn clean verify -pl bootstrap,coverage --am
+
+      - name: Upload Jacoco Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-Report
+          path: coverage/target/site/jacoco-aggregate/
+          retention-days: 7
