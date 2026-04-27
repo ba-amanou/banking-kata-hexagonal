@@ -52,6 +52,8 @@ docker compose up --build
 # Once running, the API documentation is available at `http://localhost:8080/swagger-ui.html`
 ```
 
+![Swagger UI](docs/swagger-ui.png)
+
 ## Project Structure
 
 ```
