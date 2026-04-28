@@ -2,9 +2,9 @@ spring:
   application:
     name: banking-kata
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/bankingkata}
-    username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:postgres}
+    url: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: validate
