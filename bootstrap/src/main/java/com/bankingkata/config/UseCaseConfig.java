@@ -6,13 +6,16 @@ import org.springframework.context.annotation.Configuration;
 import com.bankingkata.port.in.CreateAccountUseCase;
 import com.bankingkata.port.in.DepositMoneyUseCase;
 import com.bankingkata.port.in.GetAccountBalanceUseCase;
+import com.bankingkata.port.in.GetTransactionHistoryUseCase;
 import com.bankingkata.port.in.WithdrawMoneyUseCase;
 import com.bankingkata.port.out.LoadAccountPort;
+import com.bankingkata.port.out.LoadTransactionPort;
 import com.bankingkata.port.out.SaveAccountPort;
 import com.bankingkata.port.out.SaveTransactionPort;
 import com.bankingkata.service.CreateAccountService;
 import com.bankingkata.service.DepositMoneyService;
 import com.bankingkata.service.GetAccountBalanceService;
+import com.bankingkata.service.GetTransactionHistoryService;
 import com.bankingkata.service.WithdrawMoneyService;
 
 @Configuration
@@ -36,6 +39,11 @@ public class UseCaseConfig {
     @Bean
     public GetAccountBalanceUseCase getAccountBalanceUseCase(LoadAccountPort loadAccountPort) {
         return new GetAccountBalanceService(loadAccountPort);
+    }
+
+    @Bean
+    public GetTransactionHistoryUseCase getTransactionHistoryUseCase(LoadTransactionPort loadTransactionPort) {
+        return new GetTransactionHistoryService(loadTransactionPort);
     }    
     
 }
