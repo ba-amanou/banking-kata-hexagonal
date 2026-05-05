@@ -13,6 +13,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 import com.bankingkata.adapter.in.rest.request.AmountRequest;
 import com.bankingkata.adapter.in.rest.request.CreateAccountRequest;
 import com.bankingkata.adapter.in.rest.response.AccountResponse;
+import com.bankingkata.model.TransactionType;
 
 import org.testcontainers.junit.jupiter.Container;
 
@@ -92,7 +93,16 @@ public class AccountE2ETest {
             .exchange()
             .expectStatus().isOk()
             .expectBody()
-            .jsonPath("$.balance").isEqualTo(125.0);             
+            .jsonPath("$.balance").isEqualTo(125.0);
+            
+        restTestClient.get()
+            .uri("/accounts/{id}/history", accountId)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody()
+            .jsonPath("$.length()").isEqualTo(2)
+            .jsonPath("$[0].type").isEqualTo(TransactionType.DEPOSIT.name())
+            .jsonPath("$[1].type").isEqualTo(TransactionType.WITHDRAWAL.name());
     }
 
     @Test
