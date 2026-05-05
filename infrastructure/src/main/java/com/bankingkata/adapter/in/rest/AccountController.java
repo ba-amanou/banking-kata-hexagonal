@@ -8,16 +8,21 @@ import com.bankingkata.adapter.in.rest.request.AmountRequest;
 import com.bankingkata.adapter.in.rest.request.CreateAccountRequest;
 import com.bankingkata.adapter.in.rest.response.AccountResponse;
 import com.bankingkata.adapter.in.rest.response.BalanceResponse;
+import com.bankingkata.adapter.in.rest.response.TransactionResponse;
 import com.bankingkata.model.Account;
 import com.bankingkata.model.Money;
+import com.bankingkata.model.Transaction;
 import com.bankingkata.port.in.CreateAccountUseCase;
 import com.bankingkata.port.in.DepositMoneyUseCase;
 import com.bankingkata.port.in.GetAccountBalanceUseCase;
+import com.bankingkata.port.in.GetTransactionHistoryUseCase;
 import com.bankingkata.port.in.WithdrawMoneyUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
+
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +40,9 @@ public class AccountController {
     private final DepositMoneyUseCase depositMoneyUseCase;
     private final WithdrawMoneyUseCase withdrawMoneyUseCase;
     private final GetAccountBalanceUseCase getAccountBalanceUseCase;
+    private final GetTransactionHistoryUseCase getTransactionHistoryUseCase;
     private final AccountMapper accountMapper;
+    private final TransactionMapper transactionMapper;
 
     @Operation(summary = "Create a new account")
     @ApiResponse(responseCode = "201", description = "Account created successfully")
@@ -87,6 +94,14 @@ public class AccountController {
         return new BalanceResponse(balance.amount());
     }
 
-
+    @Operation(summary = "Get account transaction history")
+    @ApiResponse(responseCode = "200", description = "Transaction history retrieved successfully")
+    @ApiResponse(responseCode = "404", description = "Account not found")
+    @GetMapping("/{id}/history")
+    public List<TransactionResponse> history(@PathVariable("id") String id) {
+        List<Transaction> transactions = getTransactionHistoryUseCase.history(id);
+        
+        return transactions.stream().map(transactionMapper::toResponse).toList();
+    }
 
 }

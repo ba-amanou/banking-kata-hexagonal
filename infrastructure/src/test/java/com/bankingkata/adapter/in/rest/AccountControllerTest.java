@@ -1,21 +1,14 @@
 package com.bankingkata.adapter.in.rest;
 
-import com.bankingkata.adapter.in.rest.request.AmountRequest;
-import com.bankingkata.adapter.in.rest.request.CreateAccountRequest;
-import com.bankingkata.adapter.in.rest.response.AccountResponse;
-import com.bankingkata.exception.AccountNotFoundException;
-import com.bankingkata.exception.InvalidAmountException;
-import com.bankingkata.model.Account;
-import com.bankingkata.model.Money;
-import com.bankingkata.port.in.CreateAccountUseCase;
-import com.bankingkata.port.in.DepositMoneyUseCase;
-import com.bankingkata.port.in.GetAccountBalanceUseCase;
-import com.bankingkata.port.in.WithdrawMoneyUseCase;
-
-import tools.jackson.databind.ObjectMapper;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +17,23 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.bankingkata.adapter.in.rest.request.AmountRequest;
+import com.bankingkata.adapter.in.rest.request.CreateAccountRequest;
+import com.bankingkata.adapter.in.rest.response.AccountResponse;
+import com.bankingkata.adapter.in.rest.response.TransactionResponse;
+import com.bankingkata.exception.AccountNotFoundException;
+import com.bankingkata.exception.InvalidAmountException;
+import com.bankingkata.model.Account;
+import com.bankingkata.model.Money;
+import com.bankingkata.model.Transaction;
+import com.bankingkata.model.TransactionType;
+import com.bankingkata.port.in.CreateAccountUseCase;
+import com.bankingkata.port.in.DepositMoneyUseCase;
+import com.bankingkata.port.in.GetAccountBalanceUseCase;
+import com.bankingkata.port.in.GetTransactionHistoryUseCase;
+import com.bankingkata.port.in.WithdrawMoneyUseCase;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import tools.jackson.databind.ObjectMapper;
 
 @WebMvcTest(AccountController.class)
 public class AccountControllerTest {
@@ -47,7 +52,11 @@ public class AccountControllerTest {
     @MockitoBean
     private GetAccountBalanceUseCase getAccountBalanceUseCase;
     @MockitoBean
+    private GetTransactionHistoryUseCase getTransactionHistoryUseCase;
+    @MockitoBean
     private AccountMapper accountMapper;
+    @MockitoBean
+    private TransactionMapper transactionMapper;
 
     @Test
     void should_create_account_and_return_201() throws Exception {
@@ -173,7 +182,38 @@ public class AccountControllerTest {
         .andExpect(jsonPath("$.status").value(404))
         .andExpect(jsonPath("$.message").value("Account not found with id: 1"))
         .andExpect(jsonPath("$.timestamp").exists());
-    }    
+    }
+
+    @Test
+    void should_return_transaction_history() throws Exception{
+        Account account1 = Account.create(new Money(100.0));
+        List<Transaction> transactions = List.of(
+            Transaction.deposit(account1.getId(), new Money(10.0)),
+            Transaction.withdrawal(account1.getId(), new Money(20.0))
+        );
+        when(getTransactionHistoryUseCase.history(any())).thenReturn(transactions);
+        when(transactionMapper.toResponse(transactions.get(0))).thenReturn(
+            new TransactionResponse("id-1", account1.getId(), 10.0, TransactionType.DEPOSIT, LocalDateTime.now())
+        );
+        when(transactionMapper.toResponse(transactions.get(1))).thenReturn(
+            new TransactionResponse("id-2", account1.getId(), 20.0, TransactionType.WITHDRAWAL, LocalDateTime.now())
+        );
+        
+        mockMvc.perform(get("/accounts/1/history")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(2))
+        .andExpect(jsonPath("$[0].id").exists())
+        .andExpect(jsonPath("$[0].accountId").value(account1.getId()))
+        .andExpect(jsonPath("$[0].type").value(TransactionType.DEPOSIT.name()))
+        .andExpect(jsonPath("$[0].amount").value(10.0))
+        .andExpect(jsonPath("$[0].date").exists())
+        .andExpect(jsonPath("$[0].id").exists())
+        .andExpect(jsonPath("$[1].accountId").value(account1.getId()))
+        .andExpect(jsonPath("$[1].type").value(TransactionType.WITHDRAWAL.name()))
+        .andExpect(jsonPath("$[1].amount").value(20.0))
+        .andExpect(jsonPath("$[1].date").exists());
+    }
     
     
     
