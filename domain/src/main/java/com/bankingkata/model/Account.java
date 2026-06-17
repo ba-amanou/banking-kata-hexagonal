@@ -18,7 +18,7 @@ public class Account {
         return new Account(UUID.randomUUID().toString(), initialBalance);
     }
 
-    public static Account reconstitue(String id, Money balance) {
+    public static Account reconstitute(String id, Money balance) {
         return new Account(id, balance);
     }
 

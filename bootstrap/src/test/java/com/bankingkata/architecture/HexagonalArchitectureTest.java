@@ -6,9 +6,11 @@ import com.tngtech.archunit.lang.ArchRule;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
+import com.tngtech.archunit.core.importer.ImportOption;
+
 @AnalyzeClasses(
-    packages = "com.bankingkata"
-    //importOptions = ImportOption.DoNotIncludeTests.class
+    packages = "com.bankingkata",
+    importOptions = ImportOption.DoNotIncludeTests.class
 )
 public class HexagonalArchitectureTest {
 

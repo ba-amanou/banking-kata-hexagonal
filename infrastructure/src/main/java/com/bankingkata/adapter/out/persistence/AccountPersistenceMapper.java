@@ -15,7 +15,7 @@ public class AccountPersistenceMapper {
     }
 
     public Account toDomain(AccountJpaEntity accountJpaEntity) {
-        return Account.reconstitue(accountJpaEntity.getId(), new Money(accountJpaEntity.getBalance()));
+        return Account.reconstitute(accountJpaEntity.getId(), new Money(accountJpaEntity.getBalance()));
     }
 
 }
