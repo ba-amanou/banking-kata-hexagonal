@@ -25,7 +25,7 @@ public class GetAccountBalanceServiceTest {
 
     @Test
     void should_be_able_to_get_balance_account() {
-        Money amount = new Money(100.0);
+        Money amount = Money.of("100.00");
         Account account1 = Account.create(amount);
         when(loadAccountPort.load("1")).thenReturn(account1);
 

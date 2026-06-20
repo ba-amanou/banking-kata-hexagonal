@@ -1,5 +1,7 @@
 package com.bankingkata.adapter.in.rest.response;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AccountResponse {
     private String id;
-    private double balance;
+    private BigDecimal balance;
 }

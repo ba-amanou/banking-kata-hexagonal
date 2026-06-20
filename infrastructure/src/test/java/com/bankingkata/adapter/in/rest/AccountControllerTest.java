@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -61,10 +62,10 @@ public class AccountControllerTest {
     @Test
     void should_create_account_and_return_201() throws Exception {
         CreateAccountRequest request = new CreateAccountRequest();
-        request.setInitialBalance(100.0);
+        request.setInitialBalance(new BigDecimal("100.0"));
 
-        Account account = Account.create(new Money(100.0));
-        AccountResponse response = new AccountResponse(account.getId(), 100.0);
+        Account account = Account.create(Money.of("100.0"));
+        AccountResponse response = new AccountResponse(account.getId(), new BigDecimal("100.0"));
 
         when(createAccountUseCase.createAccount(any())).thenReturn(account);
         when(accountMapper.toResponse(account)).thenReturn(response);
@@ -79,9 +80,9 @@ public class AccountControllerTest {
     @Test
     void should_deposit_and_return_account_with_200() throws Exception {
         AmountRequest request = new AmountRequest();
-        request.setAmount(100.0);
+        request.setAmount(new BigDecimal("100.0"));
 
-        Account account = Account.create(new Money(100.0));
+        Account account = Account.create(Money.of("100.0"));
         AccountResponse response = new AccountResponse(account.getId(), account.getBalance().amount());
 
         when(depositMoneyUseCase.deposit(any(),any())).thenReturn(account);
@@ -98,7 +99,7 @@ public class AccountControllerTest {
     @Test
     void should_throw_exception_if_account_not_found_when_depositing() throws Exception {
         AmountRequest request = new AmountRequest();
-        request.setAmount(100.0);
+        request.setAmount(new BigDecimal("100.0"));
 
         when(depositMoneyUseCase.deposit(any(),any())).thenThrow(new AccountNotFoundException("1"));
 
@@ -115,9 +116,9 @@ public class AccountControllerTest {
     @Test
     void should_withdraw_and_return_account_with_200() throws Exception {
         AmountRequest request = new AmountRequest();
-        request.setAmount(100.0);
+        request.setAmount(new BigDecimal("100.0"));
 
-        Account account = Account.create(new Money(100.0));
+        Account account = Account.create(Money.of("100.0"));
         AccountResponse response = new AccountResponse(account.getId(), account.getBalance().amount());
 
         when(withdrawMoneyUseCase.withdraw(any(),any())).thenReturn(account);
@@ -133,7 +134,7 @@ public class AccountControllerTest {
     @Test
     void should_throw_exception_if_account_not_found_when_withdrawing() throws Exception {
         AmountRequest request = new AmountRequest();
-        request.setAmount(100.0);
+        request.setAmount(new BigDecimal("100.0"));
 
         when(withdrawMoneyUseCase.withdraw(any(),any())).thenThrow(new AccountNotFoundException("1"));
 
@@ -149,7 +150,7 @@ public class AccountControllerTest {
     @Test
     void should_throw_exception_when_withdrawing_more_than_available() throws Exception {
         AmountRequest request = new AmountRequest();
-        request.setAmount(100.0);
+        request.setAmount(new BigDecimal("100.0"));
 
         when(withdrawMoneyUseCase.withdraw(any(),any())).thenThrow(new InvalidAmountException("Insufficient funds"));
 
@@ -164,7 +165,7 @@ public class AccountControllerTest {
 
     @Test
     void should_return_balance() throws Exception {
-        when(getAccountBalanceUseCase.getBalance(any())).thenReturn(new Money(100.0));
+        when(getAccountBalanceUseCase.getBalance(any())).thenReturn(Money.of("100.0"));
 
         mockMvc.perform(get("/accounts/1/balance")
             .contentType(MediaType.APPLICATION_JSON))
@@ -186,17 +187,17 @@ public class AccountControllerTest {
 
     @Test
     void should_return_transaction_history() throws Exception{
-        Account account1 = Account.create(new Money(100.0));
+        Account account1 = Account.create(Money.of("100.0"));
         List<Transaction> transactions = List.of(
-            Transaction.deposit(account1.getId(), new Money(10.0)),
-            Transaction.withdrawal(account1.getId(), new Money(20.0))
+            Transaction.deposit(account1.getId(), Money.of("10.0")),
+            Transaction.withdrawal(account1.getId(), Money.of("20.0"))
         );
         when(getTransactionHistoryUseCase.history(any())).thenReturn(transactions);
         when(transactionMapper.toResponse(transactions.get(0))).thenReturn(
-            new TransactionResponse("id-1", account1.getId(), 10.0, TransactionType.DEPOSIT, LocalDateTime.now())
+            new TransactionResponse("id-1", account1.getId(), new BigDecimal("10.0"), TransactionType.DEPOSIT, LocalDateTime.now())
         );
         when(transactionMapper.toResponse(transactions.get(1))).thenReturn(
-            new TransactionResponse("id-2", account1.getId(), 20.0, TransactionType.WITHDRAWAL, LocalDateTime.now())
+            new TransactionResponse("id-2", account1.getId(), new BigDecimal("20.0"), TransactionType.WITHDRAWAL, LocalDateTime.now())
         );
         
         mockMvc.perform(get("/accounts/1/history")

@@ -7,6 +7,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,19 +37,19 @@ public class DepositMoneyServiceTest {
 
     @Test
     void should_be_able_to_deposit_money() {
-        Money amount = new Money(100.0);
+        Money amount = Money.of("100.00");
         Account account1 = Account.create(amount);
         when(loadAccountPort.load("1")).thenReturn(account1);
 
         depositMoneyService.deposit("1", amount);
 
-        assertThat(account1.getBalance()).isEqualTo(new Money(200.0));
+        assertThat(account1.getBalance()).isEqualTo(Money.of("200.00"));
         verify(saveAccountPort).save(account1);
     }
 
     @Test
     void should_save_transaction_with_correct_data_when_deposit() {
-        Money amount = new Money(100.0);
+        Money amount = Money.of("100.0");
         Account account1 = Account.create(amount);
         when(loadAccountPort.load("1")).thenReturn(account1);
 
@@ -64,7 +66,7 @@ public class DepositMoneyServiceTest {
     void should_throw_exception_when_account_not_found() {
         when(loadAccountPort.load("404")).thenReturn(null);
 
-        assertThatThrownBy(() -> depositMoneyService.deposit("404", new Money(100.0)))
+        assertThatThrownBy(() -> depositMoneyService.deposit("404", Money.of("100.00")))
             .isInstanceOf(AccountNotFoundException.class);
     }
 
@@ -72,7 +74,7 @@ public class DepositMoneyServiceTest {
     void should_not_save_anything_when_account_not_found() {
         when(loadAccountPort.load("404")).thenReturn(null);
 
-        assertThatThrownBy(() -> depositMoneyService.deposit("404", new Money(100.0)))
+        assertThatThrownBy(() -> depositMoneyService.deposit("404", Money.of("100.00")))
             .isInstanceOf(AccountNotFoundException.class);
             
         verifyNoInteractions(saveAccountPort, saveTransactionPort);
