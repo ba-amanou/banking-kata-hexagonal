@@ -1,6 +1,8 @@
 package com.bankingkata.adapter.out.persistence;
 
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -21,6 +23,6 @@ public class AccountJpaEntity {
     private String id;
     
     @Column(nullable = false)
-    private double balance;
+    private BigDecimal balance;
 
 }

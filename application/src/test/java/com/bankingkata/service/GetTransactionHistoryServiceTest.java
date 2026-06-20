@@ -28,10 +28,10 @@ public class GetTransactionHistoryServiceTest {
     
     @Test
     void should_return_transaction_history() {
-        Account account1 = Account.create(new Money(100.0));
+        Account account1 = Account.create(Money.of("100.00"));
         List<Transaction> transactions = List.of(
-            Transaction.deposit(account1.getId(), new Money(10.0)),
-            Transaction.deposit(account1.getId(), new Money(20.0))
+            Transaction.deposit(account1.getId(), Money.of("10.00")),
+            Transaction.deposit(account1.getId(), Money.of("20.00"))
         );
 
         when(loadTransactionPort.loadByAccountId(account1.getId())).thenReturn(transactions);
@@ -39,8 +39,8 @@ public class GetTransactionHistoryServiceTest {
         List<Transaction> result = getTransactionHistoryService.history(account1.getId());
 
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).getAmount()).isEqualTo(new Money(10.0));
-        assertThat(result.get(1).getAmount()).isEqualTo(new Money(20.0));
+        assertThat(result.get(0).getAmount()).isEqualTo(Money.of("10.00"));
+        assertThat(result.get(1).getAmount()).isEqualTo(Money.of("20.00"));
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.bankingkata.adapter.in.rest.response;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.bankingkata.model.TransactionType;
@@ -12,7 +13,7 @@ import lombok.Data;
 public class TransactionResponse {
     private String id;
     private String accountId;
-    private double amount;
+    private BigDecimal amount;
     private TransactionType type;
     private LocalDateTime date;
 }

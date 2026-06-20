@@ -1,5 +1,6 @@
 package com.bankingkata.adapter.out.persistence;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.bankingkata.model.TransactionType;
@@ -29,7 +30,7 @@ public class TransactionJpaEntity {
     private String accountId;
 
     @Column(nullable = false)
-    private double amount;
+    private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)

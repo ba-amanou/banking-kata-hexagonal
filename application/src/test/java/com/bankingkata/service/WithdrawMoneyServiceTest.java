@@ -35,19 +35,19 @@ public class WithdrawMoneyServiceTest {
 
     @Test
     void should_be_able_to_withdraw_money() {
-        Money amount = new Money(100.0);
+        Money amount = Money.of("100.00");
         Account account1 = Account.create(amount);
         when(loadAccountPort.load("1")).thenReturn(account1);
 
         withdrawMoneyService.withdraw("1", amount);
 
-        assertThat(account1.getBalance()).isEqualTo(new Money(0.0));
+        assertThat(account1.getBalance()).isEqualTo(Money.of("0.00"));
         verify(saveAccountPort).save(account1);
     }
 
     @Test
     void should_save_transaction_with_correct_data_when_withdraw() {
-        Money amount = new Money(100.0);
+        Money amount = Money.of("100.00");
         Account account1 = Account.create(amount);
         when(loadAccountPort.load("1")).thenReturn(account1);
 
@@ -65,7 +65,7 @@ public class WithdrawMoneyServiceTest {
     void should_throw_exception_when_account_not_found() {
         when(loadAccountPort.load("404")).thenReturn(null);
 
-        assertThatThrownBy(() -> withdrawMoneyService.withdraw("404", new Money(100.0)))
+        assertThatThrownBy(() -> withdrawMoneyService.withdraw("404", Money.of("100.00")))
             .isInstanceOf(AccountNotFoundException.class);
     }
 
@@ -73,7 +73,7 @@ public class WithdrawMoneyServiceTest {
     void should_not_save_anything_when_account_not_found() {
         when(loadAccountPort.load("404")).thenReturn(null);
 
-        assertThatThrownBy(() -> withdrawMoneyService.withdraw("404", new Money(100.0)))
+        assertThatThrownBy(() -> withdrawMoneyService.withdraw("404", Money.of("100.00")))
             .isInstanceOf(AccountNotFoundException.class);
             
         verifyNoInteractions(saveAccountPort, saveTransactionPort);

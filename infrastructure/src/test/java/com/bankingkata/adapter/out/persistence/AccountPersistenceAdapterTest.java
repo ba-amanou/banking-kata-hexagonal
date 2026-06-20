@@ -17,13 +17,13 @@ public class AccountPersistenceAdapterTest extends AbstractPersistenceTest {
 
     @Test
     void should_save_and_load_account() {
-        Account account = Account.create(new Money(100.0));
+        Account account = Account.create(Money.of("100.00"));
 
         adapter.save(account);
         Account loaded = adapter.load(account.getId());
 
         assertThat(loaded.getId()).isEqualTo(account.getId());
-        assertThat(loaded.getBalance()).isEqualTo(new Money(100.0));
+        assertThat(loaded.getBalance()).isEqualTo(Money.of("100.00"));
     }
 
     @Test 
@@ -35,14 +35,14 @@ public class AccountPersistenceAdapterTest extends AbstractPersistenceTest {
 
     @Test
     void should_update_account_balance_after_deposit() {
-        Account account = Account.create(new Money(100.0));
+        Account account = Account.create(Money.of("100.00"));
         adapter.save(account);
         
-        account.deposit(new Money(50.0));
+        account.deposit(Money.of("50.00"));
         adapter.save(account);
         Account loaded = adapter.load(account.getId());
 
-        assertThat(loaded.getBalance()).isEqualTo(new Money(150.0));
+        assertThat(loaded.getBalance()).isEqualTo(Money.of("150.00"));
     }
 
 }

@@ -1,5 +1,9 @@
 package com.bankingkata.e2e;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
@@ -39,61 +43,71 @@ public class AccountE2ETest {
     @Test
     void should_create_account_and_return_initial_balance() {
         CreateAccountRequest request = new CreateAccountRequest();
-        request.setInitialBalance(100.0);
+        request.setInitialBalance(new BigDecimal("100.00"));
 
-        restTestClient.post()
+        AccountResponse response = restTestClient.post()
             .uri("/accounts")
             .body(request)
             .exchange()
             .expectStatus().isCreated()
-            .expectBody()
-            .jsonPath("$.balance").isEqualTo(100.0)
-            .jsonPath("$.id").exists();
+            .returnResult(AccountResponse.class)
+            .getResponseBody();
+
+        assertThat(response.getId()).isNotNull();
+        assertThat(response.getBalance()).isEqualByComparingTo("100.00");
 
     }
 
     @Test
     void should_complete_full_account_lifecycle() {
         CreateAccountRequest createRequest = new CreateAccountRequest();
-        createRequest.setInitialBalance(100.0);
+        createRequest.setInitialBalance(new BigDecimal("100.00"));
 
-        String accountId = restTestClient.post()
+        AccountResponse createdAccount = restTestClient.post()
             .uri("/accounts")
             .body(createRequest)
             .exchange()
             .expectStatus().isCreated()
             .returnResult(AccountResponse.class)
-            .getResponseBody()
-            .getId();
+            .getResponseBody();
+
+        String accountId = createdAccount.getId();
 
         AmountRequest depositRequest = new AmountRequest();
-        depositRequest.setAmount(50.0);
+        depositRequest.setAmount(new BigDecimal("50.00"));
 
-        restTestClient.post()
+        AccountResponse afterDeposit = restTestClient.post()
             .uri("/accounts/{id}/deposit", accountId)
             .body(depositRequest)
             .exchange()
             .expectStatus().isOk()
-            .expectBody()
-            .jsonPath("$.balance").isEqualTo(150.0);
+            .returnResult(AccountResponse.class)
+            .getResponseBody();
+
+        assertThat(afterDeposit.getBalance()).isEqualByComparingTo("150.00");
 
         AmountRequest withdrawRequest = new AmountRequest();
-        withdrawRequest.setAmount(25.0);
+        withdrawRequest.setAmount(new BigDecimal("25.00"));
 
-        restTestClient.post()
+        AccountResponse afterWithdraw = restTestClient.post()
             .uri("/accounts/{id}/withdraw", accountId)
             .body(withdrawRequest)
             .exchange()
             .expectStatus().isOk()
-            .expectBody()
-            .jsonPath("$.balance").isEqualTo(125.0);
+            .returnResult(AccountResponse.class)
+            .getResponseBody();
 
-        restTestClient.get()
+        assertThat(afterWithdraw.getBalance()).isEqualByComparingTo("125.00");
+
+
+        AccountResponse currentBalance = restTestClient.get()
             .uri("/accounts/{id}/balance", accountId)
             .exchange()
             .expectStatus().isOk()
-            .expectBody()
-            .jsonPath("$.balance").isEqualTo(125.0);
+            .returnResult(AccountResponse.class)
+            .getResponseBody();
+
+        assertThat(currentBalance.getBalance()).isEqualByComparingTo("125.00");            
             
         restTestClient.get()
             .uri("/accounts/{id}/history", accountId)
@@ -108,7 +122,7 @@ public class AccountE2ETest {
     @Test
     void should_return_404_when_account_not_found() {
         AmountRequest depositRequest = new AmountRequest();
-        depositRequest.setAmount(50.0);
+        depositRequest.setAmount(new BigDecimal("50.00"));
 
         restTestClient.post()
             .uri("/accounts/unknownid/deposit")
@@ -120,7 +134,7 @@ public class AccountE2ETest {
     @Test
     void should_return_400_when_insufficient_funds() {
         CreateAccountRequest createRequest = new CreateAccountRequest();
-        createRequest.setInitialBalance(100.0);
+        createRequest.setInitialBalance(new BigDecimal("100.00"));
 
         String accountId = restTestClient.post()
             .uri("/accounts")
@@ -132,7 +146,7 @@ public class AccountE2ETest {
             .getId();
 
         AmountRequest withdrawRequest = new AmountRequest();
-        withdrawRequest.setAmount(200.0);
+        withdrawRequest.setAmount(new BigDecimal("200.00"));
 
         restTestClient.post()
             .uri("/accounts/{id}/withdraw", accountId)

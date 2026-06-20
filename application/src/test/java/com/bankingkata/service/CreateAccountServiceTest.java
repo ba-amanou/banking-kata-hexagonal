@@ -23,7 +23,7 @@ public class CreateAccountServiceTest {
 
     @Test
     void should_create_account_with_initial_balance() {
-        Money initialBalance = new Money(100.0);
+        Money initialBalance = Money.of("100.00");
 
         Account result = createAccountService.createAccount(initialBalance);
 

@@ -1,0 +1,5 @@
+ALTER TABLE accounts
+    ALTER COLUMN balance TYPE NUMERIC(19,2) USING balance::NUMERIC;
+
+ALTER TABLE transactions
+    ALTER COLUMN amount TYPE NUMERIC(19,2) USING amount::NUMERIC;
