@@ -20,9 +20,8 @@ public class DepositMoneyService implements DepositMoneyUseCase {
 
     @Override
     public Account deposit(String accountId, Money amount) {
-        Account account = loadAccountPort.load(accountId);
-
-        if(account == null) throw new AccountNotFoundException(accountId);
+        Account account = loadAccountPort.load(accountId)
+            .orElseThrow(() -> new AccountNotFoundException(accountId));
 
         account.deposit(amount);
         Transaction transaction = Transaction.deposit(accountId, amount);
