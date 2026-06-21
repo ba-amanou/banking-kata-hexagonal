@@ -1,7 +1,9 @@
 package com.bankingkata.port.out;
 
+import java.util.Optional;
+
 import com.bankingkata.model.Account;
 
 public interface LoadAccountPort {
-    Account load(String accountId);
+    Optional<Account> load(String accountId);
 }

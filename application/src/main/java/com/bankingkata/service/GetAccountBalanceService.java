@@ -15,9 +15,8 @@ public class GetAccountBalanceService implements GetAccountBalanceUseCase {
 
     @Override
     public Money getBalance(String accountId) {
-        Account account = loadAccountPort.load(accountId);
-
-        if(account == null) throw new AccountNotFoundException(accountId);
+        Account account = loadAccountPort.load(accountId)
+            .orElseThrow(() -> new AccountNotFoundException(accountId));
         
         return account.getBalance();
     }

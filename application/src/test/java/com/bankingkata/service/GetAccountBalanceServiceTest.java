@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,7 +29,7 @@ public class GetAccountBalanceServiceTest {
     void should_be_able_to_get_balance_account() {
         Money amount = Money.of("100.00");
         Account account1 = Account.create(amount);
-        when(loadAccountPort.load("1")).thenReturn(account1);
+        when(loadAccountPort.load("1")).thenReturn(Optional.of(account1));
 
         Money result = getAccountBalanceService.getBalance("1");
 
@@ -36,7 +38,7 @@ public class GetAccountBalanceServiceTest {
 
     @Test
     void should_throw_exception_when_account_not_found() {
-        when(loadAccountPort.load("404")).thenReturn(null);
+        when(loadAccountPort.load("404")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> getAccountBalanceService.getBalance("404"))
             .isInstanceOf(AccountNotFoundException.class);

@@ -1,5 +1,7 @@
 package com.bankingkata.adapter.out.persistence;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
 import com.bankingkata.model.Account;
@@ -21,10 +23,9 @@ public class AccountPersistenceAdapter implements LoadAccountPort, SaveAccountPo
     }
     
     @Override
-    public Account load(String accountId) {
+    public Optional<Account> load(String accountId) {
        return accountJpaRepository.findById(accountId)
-            .map(mapper::toDomain)
-            .orElse(null);
+            .map(mapper::toDomain);
     }
 
 

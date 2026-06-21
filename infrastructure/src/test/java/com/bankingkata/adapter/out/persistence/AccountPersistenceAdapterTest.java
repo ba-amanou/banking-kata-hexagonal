@@ -2,6 +2,8 @@ package com.bankingkata.adapter.out.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -20,17 +22,18 @@ public class AccountPersistenceAdapterTest extends AbstractPersistenceTest {
         Account account = Account.create(Money.of("100.00"));
 
         adapter.save(account);
-        Account loaded = adapter.load(account.getId());
+        Optional<Account> loaded = adapter.load(account.getId());
 
-        assertThat(loaded.getId()).isEqualTo(account.getId());
-        assertThat(loaded.getBalance()).isEqualTo(Money.of("100.00"));
+        assertThat(loaded).isPresent();
+        assertThat(loaded.get().getId()).isEqualTo(account.getId());
+        assertThat(loaded.get().getBalance()).isEqualTo(Money.of("100.00"));
     }
 
     @Test 
-    void should_return_null_when_account_not_found() {
-        Account loaded = adapter.load("id-not-found");
+    void should_return_empty_optional_when_account_not_found() {
+        Optional<Account> loaded = adapter.load("id-not-found");
 
-        assertThat(loaded).isNull();
+        assertThat(loaded).isEmpty();
     }
 
     @Test
@@ -40,9 +43,10 @@ public class AccountPersistenceAdapterTest extends AbstractPersistenceTest {
         
         account.deposit(Money.of("50.00"));
         adapter.save(account);
-        Account loaded = adapter.load(account.getId());
+        Optional<Account> loaded = adapter.load(account.getId());
 
-        assertThat(loaded.getBalance()).isEqualTo(Money.of("150.00"));
+        assertThat(loaded).isPresent();
+        assertThat(loaded.get().getBalance()).isEqualTo(Money.of("150.00"));
     }
 
 }

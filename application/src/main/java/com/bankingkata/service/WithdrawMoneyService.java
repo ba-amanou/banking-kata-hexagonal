@@ -20,9 +20,8 @@ public class WithdrawMoneyService implements WithdrawMoneyUseCase {
 
     @Override
     public Account withdraw(String accountId, Money amount) {
-        Account account = loadAccountPort.load(accountId);
-        
-        if (account == null) throw new AccountNotFoundException(accountId);
+        Account account = loadAccountPort.load(accountId)
+            .orElseThrow(() -> new AccountNotFoundException(accountId));
         
         account.withdraw(amount);
         Transaction transaction = Transaction.withdrawal(accountId, amount);

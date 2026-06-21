@@ -7,6 +7,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,7 +39,7 @@ public class WithdrawMoneyServiceTest {
     void should_be_able_to_withdraw_money() {
         Money amount = Money.of("100.00");
         Account account1 = Account.create(amount);
-        when(loadAccountPort.load("1")).thenReturn(account1);
+        when(loadAccountPort.load("1")).thenReturn(Optional.of(account1));
 
         withdrawMoneyService.withdraw("1", amount);
 
@@ -49,7 +51,7 @@ public class WithdrawMoneyServiceTest {
     void should_save_transaction_with_correct_data_when_withdraw() {
         Money amount = Money.of("100.00");
         Account account1 = Account.create(amount);
-        when(loadAccountPort.load("1")).thenReturn(account1);
+        when(loadAccountPort.load("1")).thenReturn(Optional.of(account1));
 
         withdrawMoneyService.withdraw("1", amount);
 
@@ -63,7 +65,7 @@ public class WithdrawMoneyServiceTest {
 
     @Test
     void should_throw_exception_when_account_not_found() {
-        when(loadAccountPort.load("404")).thenReturn(null);
+        when(loadAccountPort.load("404")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> withdrawMoneyService.withdraw("404", Money.of("100.00")))
             .isInstanceOf(AccountNotFoundException.class);
@@ -71,7 +73,7 @@ public class WithdrawMoneyServiceTest {
 
     @Test
     void should_not_save_anything_when_account_not_found() {
-        when(loadAccountPort.load("404")).thenReturn(null);
+        when(loadAccountPort.load("404")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> withdrawMoneyService.withdraw("404", Money.of("100.00")))
             .isInstanceOf(AccountNotFoundException.class);
