@@ -20,6 +20,7 @@ import com.bankingkata.port.in.WithdrawMoneyUseCase;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class AccountController {
     @ApiResponse(responseCode = "201", description = "Account created successfully")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AccountResponse createAccount(@RequestBody CreateAccountRequest request) {
+    public AccountResponse createAccount(@Valid @RequestBody CreateAccountRequest request) {
         Money initialBalance = new Money(request.getInitialBalance());
 
         Account account = createAccountUseCase.createAccount(initialBalance);
@@ -61,7 +62,7 @@ public class AccountController {
     @ApiResponse(responseCode = "200", description = "Deposit successful")
     @ApiResponse(responseCode = "404", description = "Account not found")
     @PostMapping("/{id}/deposit")
-    public AccountResponse deposit(@PathVariable("id") String id, @RequestBody AmountRequest request) {
+    public AccountResponse deposit(@PathVariable("id") String id, @Valid @RequestBody AmountRequest request) {
         Money amount = new Money(request.getAmount());
 
         Account account = depositMoneyUseCase.deposit(id, amount);
@@ -75,7 +76,7 @@ public class AccountController {
     @ApiResponse(responseCode = "404", description = "Account not found")
     @ApiResponse(responseCode = "400", description = "Insufficient funds")    
     @PostMapping("/{id}/withdraw")
-    public AccountResponse withdraw(@PathVariable("id") String id, @RequestBody AmountRequest request) {
+    public AccountResponse withdraw(@PathVariable("id") String id, @Valid @RequestBody AmountRequest request) {
         Money amount = new Money(request.getAmount());
 
         Account account = withdrawMoneyUseCase.withdraw(id, amount);
