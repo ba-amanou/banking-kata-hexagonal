@@ -16,15 +16,22 @@ public class GlobalExceptionHandler {
     
     @ExceptionHandler(InvalidAmountException.class)
     public ResponseEntity<ErrorResponse> handleInvalidAmount(Exception e) {
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(new ErrorResponse(400, e.getMessage(), LocalDateTime.now()));
+        return errorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleAccountNotFound(Exception e) {
+        return errorResponse(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidAccountIdException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidAccountIdException(Exception e) {
+        return errorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    private ResponseEntity<ErrorResponse> errorResponse(HttpStatus status, String message) {
         return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .body(new ErrorResponse(404, e.getMessage(), LocalDateTime.now()));
-    }    
+            .status(status)
+            .body(new ErrorResponse(status.value(), message, LocalDateTime.now()));
+    }
 }

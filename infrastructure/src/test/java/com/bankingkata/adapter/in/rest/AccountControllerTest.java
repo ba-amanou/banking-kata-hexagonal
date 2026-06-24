@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,7 @@ public class AccountControllerTest {
 
     @Test
     void should_deposit_and_return_account_with_200() throws Exception {
+        String accountId = UUID.randomUUID().toString();
         AmountRequest request = new AmountRequest();
         request.setAmount(new BigDecimal("100.0"));
 
@@ -88,7 +90,7 @@ public class AccountControllerTest {
         when(depositMoneyUseCase.deposit(any(),any())).thenReturn(account);
         when(accountMapper.toResponse(account)).thenReturn(response);
 
-        mockMvc.perform(post("/accounts/1/deposit")
+        mockMvc.perform(post("/accounts/" + accountId + "/deposit")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
@@ -98,23 +100,25 @@ public class AccountControllerTest {
 
     @Test
     void should_throw_exception_if_account_not_found_when_depositing() throws Exception {
+        String accountId = UUID.randomUUID().toString();
         AmountRequest request = new AmountRequest();
         request.setAmount(new BigDecimal("100.0"));
 
-        when(depositMoneyUseCase.deposit(any(),any())).thenThrow(new AccountNotFoundException("1"));
+        when(depositMoneyUseCase.deposit(any(),any())).thenThrow(new AccountNotFoundException(accountId));
 
-        mockMvc.perform(post("/accounts/1/deposit")
+        mockMvc.perform(post("/accounts/" + accountId + "/deposit")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.status").value(404))
-        .andExpect(jsonPath("$.message").value("Account not found with id: 1"))
+        .andExpect(jsonPath("$.message").value("Account not found with id: " + accountId))
         .andExpect(jsonPath("$.timestamp").exists());
     }
 
 
     @Test
     void should_withdraw_and_return_account_with_200() throws Exception {
+        String accountId = UUID.randomUUID().toString();
         AmountRequest request = new AmountRequest();
         request.setAmount(new BigDecimal("100.0"));
 
@@ -124,7 +128,7 @@ public class AccountControllerTest {
         when(withdrawMoneyUseCase.withdraw(any(),any())).thenReturn(account);
         when(accountMapper.toResponse(account)).thenReturn(response);
 
-        mockMvc.perform(post("/accounts/1/withdraw")
+        mockMvc.perform(post("/accounts/" + accountId + "/withdraw")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isOk())
@@ -133,28 +137,30 @@ public class AccountControllerTest {
 
     @Test
     void should_throw_exception_if_account_not_found_when_withdrawing() throws Exception {
+        String accountId = UUID.randomUUID().toString();
         AmountRequest request = new AmountRequest();
         request.setAmount(new BigDecimal("100.0"));
 
-        when(withdrawMoneyUseCase.withdraw(any(),any())).thenThrow(new AccountNotFoundException("1"));
+        when(withdrawMoneyUseCase.withdraw(any(),any())).thenThrow(new AccountNotFoundException(accountId));
 
-        mockMvc.perform(post("/accounts/1/withdraw")
+        mockMvc.perform(post("/accounts/" + accountId + "/withdraw")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.status").value(404))
-        .andExpect(jsonPath("$.message").value("Account not found with id: 1"))
+        .andExpect(jsonPath("$.message").value("Account not found with id: " + accountId))
         .andExpect(jsonPath("$.timestamp").exists());
     }
     
     @Test
     void should_throw_exception_when_withdrawing_more_than_available() throws Exception {
+        String accountId = UUID.randomUUID().toString();
         AmountRequest request = new AmountRequest();
         request.setAmount(new BigDecimal("100.0"));
 
         when(withdrawMoneyUseCase.withdraw(any(),any())).thenThrow(new InvalidAmountException("Insufficient funds"));
 
-        mockMvc.perform(post("/accounts/1/withdraw")
+        mockMvc.perform(post("/accounts/" + accountId + "/withdraw")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isBadRequest())
@@ -165,9 +171,10 @@ public class AccountControllerTest {
 
     @Test
     void should_return_balance() throws Exception {
+        String accountId = UUID.randomUUID().toString();
         when(getAccountBalanceUseCase.getBalance(any())).thenReturn(Money.of("100.0"));
 
-        mockMvc.perform(get("/accounts/1/balance")
+        mockMvc.perform(get("/accounts/" + accountId + "/balance")
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.balance").value(100.0));
@@ -175,18 +182,20 @@ public class AccountControllerTest {
 
     @Test
     void should_throw_exception_if_account_not_found_when_getting_balance() throws Exception {
-        when(getAccountBalanceUseCase.getBalance(any())).thenThrow(new AccountNotFoundException("1"));
+        String accountId = UUID.randomUUID().toString();
+        when(getAccountBalanceUseCase.getBalance(any())).thenThrow(new AccountNotFoundException(accountId));
 
-        mockMvc.perform(get("/accounts/1/balance")
+        mockMvc.perform(get("/accounts/" + accountId + "/balance")
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isNotFound())
         .andExpect(jsonPath("$.status").value(404))
-        .andExpect(jsonPath("$.message").value("Account not found with id: 1"))
+        .andExpect(jsonPath("$.message").value("Account not found with id: " + accountId))
         .andExpect(jsonPath("$.timestamp").exists());
     }
 
     @Test
-    void should_return_transaction_history() throws Exception{
+    void should_return_transaction_history() throws Exception {
+        String accountId = UUID.randomUUID().toString();
         Account account1 = Account.create(Money.of("100.0"));
         List<Transaction> transactions = List.of(
             Transaction.deposit(account1.getId(), Money.of("10.0")),
@@ -200,7 +209,7 @@ public class AccountControllerTest {
             new TransactionResponse("id-2", account1.getId(), new BigDecimal("20.0"), TransactionType.WITHDRAWAL, LocalDateTime.now())
         );
         
-        mockMvc.perform(get("/accounts/1/history")
+        mockMvc.perform(get("/accounts/" + accountId + "/history")
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.length()").value(2))
@@ -216,7 +225,17 @@ public class AccountControllerTest {
         .andExpect(jsonPath("$[1].date").exists());
     }
     
-    
+    @Test
+    void should_return_400_when_account_id_is_not_a_valid_uuid() throws Exception {
+        String invalidId = "not-a-uuid";
+
+        mockMvc.perform(get("/accounts/" + invalidId + "/balance")
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status").value(400))
+        .andExpect(jsonPath("$.message").value("Invalid account id: " + invalidId))
+        .andExpect(jsonPath("$.timestamp").exists());
+    }
     
     
 }

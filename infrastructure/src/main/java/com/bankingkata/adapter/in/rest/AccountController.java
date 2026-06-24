@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bankingkata.adapter.in.rest.exception.InvalidAccountIdException;
 import com.bankingkata.adapter.in.rest.request.AmountRequest;
 import com.bankingkata.adapter.in.rest.request.CreateAccountRequest;
 import com.bankingkata.adapter.in.rest.response.AccountResponse;
@@ -24,6 +25,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,6 +65,7 @@ public class AccountController {
     @ApiResponse(responseCode = "404", description = "Account not found")
     @PostMapping("/{id}/deposit")
     public AccountResponse deposit(@PathVariable("id") String id, @Valid @RequestBody AmountRequest request) {
+        validateId(id);
         Money amount = new Money(request.getAmount());
 
         Account account = depositMoneyUseCase.deposit(id, amount);
@@ -77,6 +80,7 @@ public class AccountController {
     @ApiResponse(responseCode = "400", description = "Insufficient funds")    
     @PostMapping("/{id}/withdraw")
     public AccountResponse withdraw(@PathVariable("id") String id, @Valid @RequestBody AmountRequest request) {
+        validateId(id);
         Money amount = new Money(request.getAmount());
 
         Account account = withdrawMoneyUseCase.withdraw(id, amount);
@@ -90,6 +94,7 @@ public class AccountController {
     @ApiResponse(responseCode = "404", description = "Account not found")
     @GetMapping("/{id}/balance")
     public BalanceResponse balance(@PathVariable("id") String id) {
+        validateId(id);
         Money balance = getAccountBalanceUseCase.getBalance(id);
         
         return new BalanceResponse(balance.amount());
@@ -100,9 +105,18 @@ public class AccountController {
     @ApiResponse(responseCode = "404", description = "Account not found")
     @GetMapping("/{id}/history")
     public List<TransactionResponse> history(@PathVariable("id") String id) {
+        validateId(id);
         List<Transaction> transactions = getTransactionHistoryUseCase.history(id);
         
         return transactions.stream().map(transactionMapper::toResponse).toList();
+    }
+
+    private void validateId(String id) {
+        try {
+            UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidAccountIdException(id);
+        }
     }
 
 }

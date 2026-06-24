@@ -3,6 +3,7 @@ package com.bankingkata.e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -121,11 +122,12 @@ public class AccountE2ETest {
 
     @Test
     void should_return_404_when_account_not_found() {
+        String IdNotFound = UUID.randomUUID().toString();
         AmountRequest depositRequest = new AmountRequest();
         depositRequest.setAmount(new BigDecimal("50.00"));
 
         restTestClient.post()
-            .uri("/accounts/unknownid/deposit")
+            .uri("/accounts/" + IdNotFound + "/deposit")
             .body(depositRequest)
             .exchange()
             .expectStatus().isNotFound();
