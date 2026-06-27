@@ -40,10 +40,15 @@ public record Money(BigDecimal amount) {
     public Money subtract(Money other){
         if(other == null) {
             throw new InvalidAmountException("Amount cannot be null");
-        }        
-        if(other.amount.compareTo(this.amount) > 0){
-            throw new InvalidAmountException("Insufficient funds");
-        } 
+        }
         return new Money(this.amount.subtract(other.amount));
+    }
+    
+    public boolean isGreaterThan(Money other) {
+        return this.amount.compareTo(other.amount) > 0;
+    }
+
+    public boolean isZero() {
+        return this.amount.compareTo(BigDecimal.ZERO) == 0;
     }    
 }
