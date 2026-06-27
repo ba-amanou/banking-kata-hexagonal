@@ -83,9 +83,54 @@ public class MoneyTest {
     @Test
     void should_throw_exception_when_too_many_decimal_places() {
 
-        assertThatThrownBy(() -> Money.of("50.123"))
+        assertThatThrownBy(() -> Money.of("50.1234"))
             .isInstanceOf(InvalidAmountException.class)
             .hasMessage("Amount cannot have more than 2 decimal places");
     }
+
+    @Test
+    void should_throw_exception_when_amount_has_trailing_zero_beyond_two_decimals() {
+        assertThatThrownBy(() -> Money.of("10.100"))
+            .isInstanceOf(InvalidAmountException.class)
+            .hasMessage("Amount cannot have more than 2 decimal places");
+    }     
+
+    @Test
+    void should_throw_exception_when_amount_is_null() {
+        assertThatThrownBy(() -> new Money(null))
+            .isInstanceOf(InvalidAmountException.class)
+            .hasMessage("Amount cannot be null");
+    }
+
+    @Test
+    void should_throw_exception_when_of_is_called_with_null() {
+        assertThatThrownBy(() -> Money.of(null))
+            .isInstanceOf(InvalidAmountException.class)
+            .hasMessage("Amount cannot be null");
+    }
+
+    @Test
+    void should_throw_exception_when_adding_null() {
+        Money money = Money.of("100.00");
+        assertThatThrownBy(() -> money.add(null))
+            .isInstanceOf(InvalidAmountException.class)
+            .hasMessage("Amount cannot be null");
+    }
+
+    @Test
+    void should_throw_exception_when_subtracting_null() {
+        Money money = Money.of("100.00");
+        assertThatThrownBy(() -> money.subtract(null))
+            .isInstanceOf(InvalidAmountException.class)
+            .hasMessage("Amount cannot be null");
+    }
+
+    @Test
+    void should_throw_exception_when_of_is_called_with_invalid_amount() {
+        assertThatThrownBy(() -> Money.of("test"))
+            .isInstanceOf(InvalidAmountException.class)
+            .hasMessage("Invalid Amount");
+    }
+   
 }
 
