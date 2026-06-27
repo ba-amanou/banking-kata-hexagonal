@@ -124,6 +124,13 @@ public class MoneyTest {
             .isInstanceOf(InvalidAmountException.class)
             .hasMessage("Amount cannot be null");
     }
+
+    @Test
+    void should_throw_exception_when_of_is_called_with_invalid_amount() {
+        assertThatThrownBy(() -> Money.of("test"))
+            .isInstanceOf(InvalidAmountException.class)
+            .hasMessage("Invalid Amount");
+    }
    
 }
 
