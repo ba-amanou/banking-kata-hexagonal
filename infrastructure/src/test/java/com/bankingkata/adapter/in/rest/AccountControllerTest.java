@@ -27,7 +27,7 @@ import com.bankingkata.adapter.in.rest.request.CreateAccountRequest;
 import com.bankingkata.adapter.in.rest.response.AccountResponse;
 import com.bankingkata.adapter.in.rest.response.TransactionResponse;
 import com.bankingkata.exception.AccountNotFoundException;
-import com.bankingkata.exception.InvalidAmountException;
+import com.bankingkata.exception.InsufficientFundsException;
 import com.bankingkata.model.Account;
 import com.bankingkata.model.Money;
 import com.bankingkata.model.Transaction;
@@ -172,7 +172,7 @@ public class AccountControllerTest {
             AmountRequest request = new AmountRequest();
             request.setAmount(new BigDecimal("100.0"));
 
-            when(withdrawMoneyUseCase.withdraw(any(),any())).thenThrow(new InvalidAmountException("Insufficient funds"));
+            when(withdrawMoneyUseCase.withdraw(any(),any())).thenThrow(new InsufficientFundsException("Insufficient funds"));
 
             mockMvc.perform(post("/accounts/" + accountId + "/withdraw")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -40,15 +40,15 @@ public class MoneyTest {
         Money result = money1.subtract(money2);
         assertThat(result.amount()).isEqualByComparingTo("50.00");
     }  
-    
+
     @Test
-    void should_throw_exception_when_subtracting_more_than_available() {
+    void should_throw_exception_when_subtract_result_is_negative() {
         Money money1 = Money.of("50.00");
         Money money2 = Money.of("100.00");
 
         assertThatThrownBy(() -> money1.subtract(money2))
             .isInstanceOf(InvalidAmountException.class)
-            .hasMessage("Insufficient funds");
+            .hasMessage("Amount cannot be negative");
     }
 
     @Test
@@ -130,6 +130,44 @@ public class MoneyTest {
         assertThatThrownBy(() -> Money.of("test"))
             .isInstanceOf(InvalidAmountException.class)
             .hasMessage("Invalid Amount");
+    }
+
+    @Test
+    void should_return_true_when_amount_is_greater_than_other() {
+        Money money1 = Money.of("100.00");
+        Money money2 = Money.of("50.00");
+
+        assertThat(money1.isGreaterThan(money2)).isTrue();
+    }
+
+    @Test
+    void should_return_false_when_amount_is_not_greater_than_other() {
+        Money money1 = Money.of("50.00");
+        Money money2 = Money.of("100.00");
+
+        assertThat(money1.isGreaterThan(money2)).isFalse();
+    }
+    
+    @Test
+    void should_return_false_when_amounts_are_equal() {
+        Money money1 = Money.of("100.00");
+        Money money2 = Money.of("100.00");
+
+        assertThat(money1.isGreaterThan(money2)).isFalse();
+    }
+
+    @Test
+    void should_return_true_when_amount_is_zero() {
+        Money money = Money.of("0.00");
+
+        assertThat(money.isZero()).isTrue();
+    }
+
+    @Test
+    void should_return_false_when_amount_is_not_zero() {
+        Money money = Money.of("0.01");
+
+        assertThat(money.isZero()).isFalse();
     }
    
 }

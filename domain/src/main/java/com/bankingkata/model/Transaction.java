@@ -5,11 +5,13 @@ import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(of = "id")
 public class Transaction {
     private String id;
     private String accountId;
