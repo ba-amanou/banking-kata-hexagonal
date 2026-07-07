@@ -3,14 +3,18 @@ package com.bankingkata.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,6 +26,7 @@ import com.bankingkata.model.TransactionType;
 import com.bankingkata.port.out.LoadAccountPort;
 import com.bankingkata.port.out.SaveAccountPort;
 import com.bankingkata.port.out.SaveTransactionPort;
+import com.bankingkata.port.out.UnitOfWork;
 
 @ExtendWith(MockitoExtension.class)
 public class DepositMoneyServiceTest {
@@ -34,6 +39,14 @@ public class DepositMoneyServiceTest {
     private SaveTransactionPort saveTransactionPort;
     @InjectMocks
     private DepositMoneyService depositMoneyService;
+    @Mock
+    private UnitOfWork unitOfWork;
+
+    @BeforeEach
+    void setUp() {
+        lenient().when(unitOfWork.execute(ArgumentMatchers.<Supplier<Object>>any()))
+            .thenAnswer(invocation -> ((Supplier<?>) invocation.getArgument(0)).get());
+    }
 
     @Test
     void should_be_able_to_deposit_money() {

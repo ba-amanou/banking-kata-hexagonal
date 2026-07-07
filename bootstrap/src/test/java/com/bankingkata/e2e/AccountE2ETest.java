@@ -6,40 +6,13 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.web.servlet.client.RestTestClient;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.postgresql.PostgreSQLContainer;
 
 import com.bankingkata.adapter.in.rest.request.AmountRequest;
 import com.bankingkata.adapter.in.rest.request.CreateAccountRequest;
 import com.bankingkata.adapter.in.rest.response.AccountResponse;
 import com.bankingkata.model.TransactionType;
 
-import org.testcontainers.junit.jupiter.Container;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureRestTestClient
-@Testcontainers
-public class AccountE2ETest {
-
-    @Container
-    static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:15");
-
-    @Autowired
-    private RestTestClient restTestClient;
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
-
-    }
+public class AccountE2ETest extends AbstractPostgresE2ETest {
 
     @Test
     void should_create_account_and_return_initial_balance() {
