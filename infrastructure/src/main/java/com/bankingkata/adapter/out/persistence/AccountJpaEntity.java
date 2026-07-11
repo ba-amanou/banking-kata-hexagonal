@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,8 +22,10 @@ import lombok.NoArgsConstructor;
 public class AccountJpaEntity {
     @Id
     private String id;
-    
     @Column(nullable = false)
     private BigDecimal balance;
+   
+    @Version
+    private Long version;
 
 }

@@ -3,7 +3,6 @@ package com.bankingkata.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-
 import org.junit.jupiter.api.Test;
 
 import com.bankingkata.exception.InsufficientFundsException;
@@ -81,36 +80,49 @@ public class AccountTest {
 
     @Test
     void should_throw_exception_when_reconstituting_with_null_balance() {
-        assertThatThrownBy(() -> Account.reconstitute("id-1", null))
+        assertThatThrownBy(() -> Account.reconstitute("id-1", null, null))
             .isInstanceOf(InvalidAmountException.class)
             .hasMessage("Balance cannot be null");
     }
 
     @Test
     void should_throw_exception_when_reconstituting_with_null_id() {
-        assertThatThrownBy(() -> Account.reconstitute(null, Money.of("100.00")))
+        assertThatThrownBy(() -> Account.reconstitute(null, Money.of("100.00"), 0L))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Account id cannot be null or blank");
     }
 
     @Test
     void should_throw_exception_when_reconstituting_with_blank_id() {
-        assertThatThrownBy(() -> Account.reconstitute("   ", Money.of("100.00")))
+        assertThatThrownBy(() -> Account.reconstitute("   ", Money.of("100.00"), 0L))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("Account id cannot be null or blank");
     }
 
     @Test
     void should_be_equal_when_same_id_even_with_different_balance() {
-        Account account1 = Account.reconstitute("same-id", Money.of("100.00"));
-        Account account2 = Account.reconstitute("same-id", Money.of("999.00"));
+        Account account1 = Account.reconstitute("same-id", Money.of("100.00"), 0L);
+        Account account2 = Account.reconstitute("same-id", Money.of("999.00"), 1L);
         assertThat(account1).isEqualTo(account2);
     }
 
     @Test
     void should_not_be_equal_when_different_id() {
-        Account account1 = Account.reconstitute("id-1", Money.of("100.00"));
-        Account account2 = Account.reconstitute("id-2", Money.of("100.00"));
+        Account account1 = Account.reconstitute("id-1", Money.of("100.00"), 0L);
+        Account account2 = Account.reconstitute("id-2", Money.of("100.00"), 0L);
         assertThat(account1).isNotEqualTo(account2);
-    }    
+    }
+
+    @Test
+    void should_have_null_version_when_creating_a_new_account() {
+        Account account = Account.create(Money.of("100.00"));
+        assertThat(account.getVersion()).isNull();
+    }
+ 
+    @Test
+    void should_carry_the_given_version_when_reconstituting() {
+        Account account = Account.reconstitute("id-1", Money.of("100.00"), 4L);
+        assertThat(account.getVersion()).isEqualTo(4L);
+    }
+
 }

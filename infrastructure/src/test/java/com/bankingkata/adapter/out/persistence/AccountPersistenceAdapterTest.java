@@ -40,9 +40,10 @@ public class AccountPersistenceAdapterTest extends AbstractPersistenceTest {
     void should_update_account_balance_after_deposit() {
         Account account = Account.create(Money.of("100.00"));
         adapter.save(account);
-        
-        account.deposit(Money.of("50.00"));
-        adapter.save(account);
+
+        Account reloaded = adapter.load(account.getId()).orElseThrow();
+        reloaded.deposit(Money.of("50.00"));
+        adapter.save(reloaded);
         Optional<Account> loaded = adapter.load(account.getId());
 
         assertThat(loaded).isPresent();
