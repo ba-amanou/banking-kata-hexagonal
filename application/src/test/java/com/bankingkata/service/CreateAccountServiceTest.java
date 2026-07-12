@@ -1,7 +1,9 @@
 package com.bankingkata.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +26,7 @@ public class CreateAccountServiceTest {
     @Test
     void should_create_account_with_initial_balance() {
         Money initialBalance = Money.of("100.00");
+        when(saveAccountPort.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         Account result = createAccountService.createAccount(initialBalance);
 

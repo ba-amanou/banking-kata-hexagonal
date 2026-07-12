@@ -29,10 +29,10 @@ public class WithdrawMoneyService implements WithdrawMoneyUseCase {
             account.withdraw(amount);
             Transaction transaction = Transaction.withdrawal(accountId, amount);
 
-            saveAccountPort.save(account);
+            Account savedAccount = saveAccountPort.save(account);
             saveTransactionPort.save(transaction);
 
-            return account;
+            return savedAccount;
         });
     }  
 }

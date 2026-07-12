@@ -53,10 +53,12 @@ public class WithdrawMoneyServiceTest {
         Money amount = Money.of("100.00");
         Account account1 = Account.create(amount);
         when(loadAccountPort.load("1")).thenReturn(Optional.of(account1));
+        when(saveAccountPort.save(account1)).thenReturn(account1);
 
-        withdrawMoneyService.withdraw("1", amount);
+        Account result = withdrawMoneyService.withdraw("1", amount);
 
         assertThat(account1.getBalance()).isEqualTo(Money.of("0.00"));
+        assertThat(result).isEqualTo(account1);
         verify(saveAccountPort).save(account1);
     }
 

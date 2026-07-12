@@ -17,9 +17,12 @@ public class AccountPersistenceAdapter implements LoadAccountPort, SaveAccountPo
     private final AccountPersistenceMapper mapper;
 
     @Override
-    public void save(Account account) {
+    public Account save(Account account) {
         AccountJpaEntity accountEntity = mapper.toJpaEntity(account);
-        accountJpaRepository.save(accountEntity);
+        // saveAndFlush not save : the returned entity's @Version must reflect
+        // the actual post-update value before the enclosing transaction commits
+        AccountJpaEntity saved = accountJpaRepository.saveAndFlush(accountEntity);
+        return mapper.toDomain(saved);
     }
     
     @Override
