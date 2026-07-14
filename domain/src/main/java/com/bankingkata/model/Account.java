@@ -14,7 +14,11 @@ public class Account {
     private String id;
     private Money balance;
 
-    private Account(String id, Money balance) {
+    // Optimistic locking token, carried by the aggregate to protect
+    // its consistency boundary regarless of the underlying persistence mechanism
+    private Long version;
+
+    private Account(String id, Money balance, Long version) {
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("Account id cannot be null or blank");
         }
@@ -23,14 +27,15 @@ public class Account {
         }
         this.id = id;
         this.balance = balance;
+        this.version = version;
     }
 
     public static Account create(Money initialBalance) {
-        return new Account(UUID.randomUUID().toString(), initialBalance);
+        return new Account(UUID.randomUUID().toString(), initialBalance, null);
     }
 
-    public static Account reconstitute(String id, Money balance) {
-        return new Account(id, balance);
+    public static Account reconstitute(String id, Money balance, Long version) {
+        return new Account(id, balance, version);
     }
 
     public void deposit(Money amount) {

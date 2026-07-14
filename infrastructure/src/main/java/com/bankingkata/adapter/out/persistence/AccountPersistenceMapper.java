@@ -11,11 +11,16 @@ public class AccountPersistenceMapper {
         return AccountJpaEntity.builder()
             .id(account.getId())
             .balance(account.getBalance().amount())
+            .version(account.getVersion())
             .build();
     }
 
     public Account toDomain(AccountJpaEntity accountJpaEntity) {
-        return Account.reconstitute(accountJpaEntity.getId(), new Money(accountJpaEntity.getBalance()));
+        return Account.reconstitute(
+            accountJpaEntity.getId(),
+            new Money(accountJpaEntity.getBalance()),
+            accountJpaEntity.getVersion()
+        );
     }
 
 }

@@ -16,9 +16,7 @@ public class CreateAccountService implements CreateAccountUseCase {
     public Account createAccount(Money initialBalance) {
         Account newAccount = Account.create(initialBalance);
 
-        saveAccountPort.save(newAccount);
-        
-        return newAccount;
+        return saveAccountPort.save(newAccount);
     }
     
 }

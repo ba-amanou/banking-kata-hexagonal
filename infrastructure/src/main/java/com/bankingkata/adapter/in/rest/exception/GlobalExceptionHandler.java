@@ -15,6 +15,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.bankingkata.adapter.in.rest.response.ErrorResponse;
 import com.bankingkata.exception.AccountNotFoundException;
+import com.bankingkata.exception.ConcurrentAccountModificationException;
 import com.bankingkata.exception.DomainException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +60,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErrorResponse> handleNoResourceFound(NoResourceFoundException e) {
         return errorResponse(HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ConcurrentAccountModificationException.class)
+    public ResponseEntity<ErrorResponse> handleConcurrentAccountModification(ConcurrentAccountModificationException e) {
+        return errorResponse(HttpStatus.CONFLICT, e.getMessage());
     }
 
     @ExceptionHandler(DomainException.class)

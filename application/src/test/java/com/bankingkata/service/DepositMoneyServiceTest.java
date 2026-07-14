@@ -53,10 +53,12 @@ public class DepositMoneyServiceTest {
         Money amount = Money.of("100.00");
         Account account1 = Account.create(amount);
         when(loadAccountPort.load("1")).thenReturn(Optional.of(account1));
-
-        depositMoneyService.deposit("1", amount);
+        when(saveAccountPort.save(account1)).thenReturn(account1);
+        
+        Account result = depositMoneyService.deposit("1", amount);
 
         assertThat(account1.getBalance()).isEqualTo(Money.of("200.00"));
+        assertThat(result).isEqualTo(account1);
         verify(saveAccountPort).save(account1);
     }
 

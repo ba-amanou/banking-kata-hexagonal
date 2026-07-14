@@ -29,10 +29,10 @@ public class DepositMoneyService implements DepositMoneyUseCase {
             account.deposit(amount);
             Transaction transaction = Transaction.deposit(accountId, amount);
 
-            saveAccountPort.save(account);
+            Account savedAccount = saveAccountPort.save(account);
             saveTransactionPort.save(transaction);
 
-            return account;
+            return savedAccount;
         });
     }
 
